@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Настройка Python (если используете Python)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      # Установка зависимостей
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Запуск тестов
+      - name: Run tests
+        run: |
+          pytest
+
+      # Сборка Docker-образа
+      - name: Build Docker image
+        run: docker build -t taski-docker .
+
+      # Публикация Docker-образа (если необходимо)
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push taski-docker
