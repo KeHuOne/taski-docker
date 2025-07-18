@@ -152,13 +152,17 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd /home/ubuntu/taski
-          echo "DEBUG=False" > .env
-          echo "SECRET_KEY=your-secret-key" >> .env
-          echo "DB_HOST=db" >> .env
-          echo "DB_PORT=5432" >> .env
-          echo "DB_NAME=postgres" >> .env
-          echo "DB_USER=postgres" >> .env
-          echo "DB_PASSWORD=postgres" >> .env
+          cat <<EOF > .env
+          DEBUG=False
+          SECRET_KEY=your-secret-key
+          DB_ENGINE=django.db.backends.postgresql
+          DB_NAME=postgres
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=postgres
+          DB_HOST=db
+          DB_PORT=5432
+          ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+          EOF
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
