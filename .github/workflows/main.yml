@@ -144,6 +144,21 @@ jobs:
         source: "."
         target: "taski"
         strip_components: 1
+    - name: Generate .env on VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        script: |
+          cd /home/ubuntu/taski
+          echo "DEBUG=False" > .env
+          echo "SECRET_KEY=your-secret-key" >> .env
+          echo "DB_HOST=db" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_NAME=postgres" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
